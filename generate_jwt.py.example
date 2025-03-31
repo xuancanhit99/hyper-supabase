@@ -1,0 +1,45 @@
+import jwt
+from datetime import datetime, timedelta
+import time
+
+# JWT secret from .env
+JWT_SECRET = ''
+
+# Current timestamp
+now = int(time.time())
+
+# Generate anon token
+anon_payload = {
+    'role': 'anon',
+    'iss': 'supabase',
+    'iat': now,
+    'exp': now + (24 * 60 * 60)  # 24 hours expiry
+}
+
+anon_token = jwt.encode(anon_payload, JWT_SECRET, algorithm='HS256')
+
+# Generate service role token
+service_payload = {
+    'role': 'service_role',
+    'iss': 'supabase',
+    'iat': now,
+    'exp': now + (24 * 60 * 60)  # 24 hours expiry
+}
+
+service_token = jwt.encode(service_payload, JWT_SECRET, algorithm='HS256')
+
+print('ANON_KEY=' + anon_token)
+print('SERVICE_ROLE_KEY=' + service_token)
+
+
+# Trong tệp `.env` của Supabase, biến `VAULT_ENC_KEY` đại diện cho khóa mã hóa được sử dụng bởi Supabase Vault. Supabase Vault là một tiện ích mở rộng của PostgreSQL, cho phép lưu trữ an toàn các thông tin nhạy cảm như khóa API, mã thông báo truy cập và các bí mật khác trong cơ sở dữ liệu của bạn. citeturn0search2
+#
+# Khóa `VAULT_ENC_KEY` cần có độ dài tối thiểu 32 byte để đảm bảo tính bảo mật. citeturn0search1 Bạn có thể tạo một giá trị an toàn cho `VAULT_ENC_KEY` bằng lệnh sau trong terminal:
+#
+#
+# ```bash
+# openssl rand -base64 24
+# ```
+# 
+#
+# Lệnh này sẽ tạo một chuỗi ngẫu nhiên mã hóa base64 dài 24 ký tự, phù hợp để sử dụng làm `VAULT_ENC_KEY`. Đảm bảo rằng bạn thay thế giá trị mặc định trong tệp `.env` bằng giá trị mới tạo trước khi triển khai ứng dụng vào môi trường sản xuất.
